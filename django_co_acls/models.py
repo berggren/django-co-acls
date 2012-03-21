@@ -57,9 +57,13 @@ def deny(object,ug,permission):
     else:
         raise Exception,"Don't know how to allow %s to do stuff" % repr(ug)
 
-def acl(object):
+def acl(object,permission=None):
     type = ContentType.objects.get_for_model(object)
-    return AccessControlEntry.objects.filter(object_id=object.id,content_type=type)
+    qs = AccessControlEntry.objects.filter(object_id=object.id,content_type=type)
+    if permission != None:
+        return qs.filter(permission=permission)
+    else:
+        return qs
 
 def allow_user(object,user,permission):
     type = ContentType.objects.get_for_model(object)
